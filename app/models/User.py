@@ -39,10 +39,7 @@ class User:
         user_row = self.db.fetch_single(
             self.table, user_columns[0], user_values[0])
 
-        if not user_row:
-            return False
-        else:
-            return True
+        return bool(user_row)
 
     def log_in_user(self):
         user_columns = []
@@ -51,10 +48,9 @@ class User:
             user_columns.append(key)
             user_values.append(value)
 
-        user_row = self.db.fetch_single(
-            self.table, user_columns[0], user_values[0])
-
-        if user_row:
+        if user_row := self.db.fetch_single(
+            self.table, user_columns[0], user_values[0]
+        ):
             is_user_password = auth.check_hashed_password(
                 self.credentials['user_password'], user_row["user_password"])
 

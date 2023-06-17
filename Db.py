@@ -21,8 +21,7 @@ class MySQLDatabase:
     def fetch_all(self, table: str):
         try:
             query = self.cursor.execute("SELECT * FROM `%s`", table)
-            rows = self.cursor.fetchall()
-            return rows
+            return self.cursor.fetchall()
         except mysql.connector.Error as e:
             print(e)
             return False
@@ -40,13 +39,11 @@ class MySQLDatabase:
             # let's fill the insert values into a list to use with execute
             key_value = value
 
-        sql_prepared = "SELECT * FROM `%s` WHERE `%s`=%s" % (
-            table, column, placeholder)
+        sql_prepared = f"SELECT * FROM `{table}` WHERE `{column}`={placeholder}"
 
         try:
             query = self.cursor.execute(sql_prepared, [value, ])
-            rows = self.cursor.fetchall()
-            return rows
+            return self.cursor.fetchall()
         except mysql.connector.Error as e:
             print(e)
             return False
@@ -55,14 +52,12 @@ class MySQLDatabase:
         sql_formatted_value = "'{value}'".format(value=column_value)
         placeholder = "%s".format(column_name=column_name)
         # let's build our query
-        sql_prepared = "SELECT * FROM `%s` WHERE `%s`=%s" % (
-            table, column_name, placeholder)
+        sql_prepared = f"SELECT * FROM `{table}` WHERE `{column_name}`={placeholder}"
 
         try:
             self.cursor.execute(sql_prepared,
                                 [column_value, ])
-            row = self.cursor.fetchone()
-            return row
+            return self.cursor.fetchone()
         except mysql.connector.Error as e:
             print(e)
             return False
@@ -86,8 +81,7 @@ class MySQLDatabase:
                 columns += ', '
                 placeholders += ', '
 
-        sql_prepared = "INSERT INTO `%s` (%s) VALUES (%s)" % (
-            table, columns, placeholders)
+        sql_prepared = f"INSERT INTO `{table}` ({columns}) VALUES ({placeholders})"
 
         try:
             self.cursor.execute(sql_prepared, values)
@@ -116,8 +110,7 @@ class MySQLDatabase:
         # append the id as the last param
         values.append(id)
 
-        sql_prepared = "UPDATE `%s` SET %s WHERE `id`=%s" % (
-            table, update_params, '%s')
+        sql_prepared = f"UPDATE `{table}` SET {update_params} WHERE `id`=%s"
         try:
             self.cursor.execute(sql_prepared, values)
             self.dbconn.commit()
@@ -157,8 +150,7 @@ class SQLite3Database:
     def fetch_all(self, table: str):
         try:
             query = self.cursor.execute("SELECT * FROM `?`", table)
-            rows = self.cursor.fetchall()
-            return rows
+            return self.cursor.fetchall()
         except sqlite3.Error as e:
             print(e)
             return False
@@ -167,14 +159,12 @@ class SQLite3Database:
         sql_formatted_value = "'{value}'".format(value=column_value)
         placeholder = ":{column_name}".format(column_name=column_name)
         # let's build our query
-        sql_prepared = "SELECT * FROM `%s` WHERE `%s`=%s" % (
-            table, column_name, placeholder)
+        sql_prepared = f"SELECT * FROM `{table}` WHERE `{column_name}`={placeholder}"
 
         try:
             self.cursor.execute(sql_prepared,
                                 [column_value, ])
-            row = self.cursor.fetchone()
-            return row
+            return self.cursor.fetchone()
         except sqlite3.Error as e:
             print(e)
             return False
@@ -198,8 +188,7 @@ class SQLite3Database:
                 columns += ', '
                 placeholders += ', '
 
-        sql_prepared = "INSERT INTO `%s` (%s) VALUES (%s)" % (
-            table, columns, placeholders)
+        sql_prepared = f"INSERT INTO `{table}` ({columns}) VALUES ({placeholders})"
 
         try:
             self.cursor.execute(sql_prepared, values)
@@ -228,8 +217,7 @@ class SQLite3Database:
         # append the id as the last param
         values.append(id)
 
-        sql_prepared = "UPDATE `%s` SET %s WHERE `id`=%s" % (
-            table, update_params, ':id')
+        sql_prepared = f"UPDATE `{table}` SET {update_params} WHERE `id`=:id"
         try:
             self.cursor.execute(sql_prepared, values)
             self.conn.commit()

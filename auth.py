@@ -38,12 +38,12 @@ def bind_data_to_session_credentials(data: list):
 
 def hash_password(password: str):
     salt = bcrypt.gensalt(rounds=16)
-    hased_pw = bcrypt.hashpw(password.encode('utf-8'), salt)
-    return hased_pw
+    return bcrypt.hashpw(password.encode('utf-8'), salt)
 
 
 def check_hashed_password(password: str, hashed_password: str):
-    if bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8')):
-        return True
-    else:
-        return False
+    return bool(
+        bcrypt.checkpw(
+            password.encode('utf-8'), hashed_password.encode('utf-8')
+        )
+    )
