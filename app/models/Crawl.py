@@ -32,19 +32,13 @@ class CrawlInstance:
         self.db.dbconn.commit()
 
     def is_valid_url(self, url: str):
-        response = validate_web_url(url)
-        if response:
-            return True
-        else:
-            return False
+        return bool(response := validate_web_url(url))
 
-    def retrieve_and_parse_url(sefl, url: str):
+    def retrieve_and_parse_url(self, url: str):
 
         formatted_target_url = manage_domain_scheme(
             url)
-        parsed_target_url = urlparse(formatted_target_url)
-
-        return parsed_target_url
+        return urlparse(formatted_target_url)
 
     def prepare_data_dir(self):
         # we'll also need a parse version of the full url
@@ -59,11 +53,7 @@ class CrawlInstance:
         data = get_webpage_html(
             self.user_crawl_options['webpage_url'])
 
-        if data.status_code != 200:
-            return False
-        data_soup = convert_html_to_soup_obj(data)
-
-        return data_soup
+        return False if data.status_code != 200 else convert_html_to_soup_obj(data)
 
     def index_webpage_content_by_url(self, url: str, index: int):
         # let's grab the html response from the server

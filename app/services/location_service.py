@@ -83,30 +83,23 @@ def format_href_as_url(href: str, target_domain: str):
         href_regexp = re.compile(
             r'((https?://)|(www.))(.*)+')
 
-        mo = href_regexp.match(href)
-
-        # we'll only return valid matchs from now on
-        if mo:
+        if mo := href_regexp.match(href):
             # let's asses for hrefs starting with either a www. or no scheme
             if mo.group() and re.match(r'www.', mo.group()) or mo.group() and not re.match(r'https?://', mo.group()):
                 # if there wasn't shceme found
                 href = "{scheme}://{href}".format(
                     scheme=parsed_target_domain.scheme, href=href)
-                return href
-            else:
-                # if it has a scheme or domain, return it
-                return href
         else:
             # there was no scheme or domain -> common in static websites
             href = "{scheme}://{net_location}/{href}".format(
                 scheme=parsed_target_domain.scheme, net_location=parsed_target_domain.netloc, href=href)
-            return href
     else:
         # if the href was "/", grab the scheme and target domain and prepend
         href = "{scheme}://{net_location}{href}".format(
             scheme=parsed_target_domain.scheme, net_location=parsed_target_domain.netloc, href=href)
 
-        return href
+
+    return href
 
 
 def filter_pdf_link_locations(links: list):

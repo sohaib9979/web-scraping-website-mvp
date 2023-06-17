@@ -29,19 +29,12 @@ def convert_html_to_soup_obj(html: requests.Response):
     # lets store the html as a utf-8 encoded string
     html_string = html.text
 
-    # let's parse the html into an object with BeautifulSoup
-    html_soup = BeautifulSoup(html_string, 'html.parser')
-
-    return html_soup
+    return BeautifulSoup(html_string, 'html.parser')
 
 
 def get_valid_webpage_link_hrefs_in_navs(html: BeautifulSoup):
     link_hrefs = []
-    # we need to asses if the page has a nav before we can look for _hrefs
-    navs = html.find_all('nav')
-
-    if navs:
-
+    if navs := html.find_all('nav'):
         for nav in navs:
 
             # let's get the href of every link
@@ -73,10 +66,7 @@ def get_valid_webpage_link_hrefs_in_navs(html: BeautifulSoup):
 def get_internal_links_from_webpage(html: BeautifulSoup, target_url: str):
     valid_internal_links = []
 
-    links = html.find_all("a")
-
-    if links:
-
+    if links := html.find_all("a"):
         for link in links:
 
             # lets extract all the hrefs
@@ -134,7 +124,7 @@ def assess_content_type_for_text_or_json(response: requests.Response):
 
         mo = response_regexp.match(content_type)
 
-        if mo and mo.group(0):
+        if mo and mo[0]:
             # a mo group means a match
             return True
         else:
@@ -163,17 +153,11 @@ def extract_and_format_main_content_as_text(html_soup: BeautifulSoup):
 
     for tag in html_soup.find_all(re.compile('^(h[1-6]|p)')):
         tag_text = tag.get_text()
-        tag_text = tag_text.lstrip().rstrip()
-
-        if tag_text:
+        if tag_text := tag_text.lstrip().rstrip():
             main_content.append(tag_text)
 
-    main_content_text = "\n".join(main_content)
-
-    return main_content_text
+    return "\n".join(main_content)
 
 
 def convert_soup_to_text(html_soup: BeautifulSoup):
-    # let's extract the text with BeautifulSoup
-    html_text_content = html_soup.get_text()
-    return html_text_content
+    return html_soup.get_text()

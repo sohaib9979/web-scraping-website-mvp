@@ -9,8 +9,7 @@ from flask import request, render_template, session, redirect, url_for, flash, g
 
 def user_register(user_data: list):
     user = User(user_data)
-    is_registered = user.is_registered_user()
-    if is_registered:
+    if is_registered := user.is_registered_user():
         flash("email address is already registered, login instead", "danger")
         return render_template("register.jinja.html")
     else:

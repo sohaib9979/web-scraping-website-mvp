@@ -4,9 +4,9 @@ import shutil
 
 
 def setup_data_directory(parsed_target_url, id: int):
-    data_dir = 'public/' + str(id) + "_" + str(parsed_target_url.netloc)
+    data_dir = f'public/{id}_{str(parsed_target_url.netloc)}'
     # let's create a directory for data
-    if not os.path.exists('public/' + str(id) + "_" + str(parsed_target_url.netloc)):
+    if not os.path.exists(f'public/{id}_{str(parsed_target_url.netloc)}'):
         os.makedirs(data_dir)
 
     return data_dir
@@ -28,14 +28,9 @@ def strip_whitespace_from_file(text_file_location: str):
     stripped_text = []
     with open(text_file_location, "r") as parsed_text_file:
         for line in parsed_text_file:
-            # let's strip all of the leading and trailing whitespace from each line
-            line = line.rstrip().lstrip()
-            # if the line of text isn't empty, push to our return value
-            if line:
+            if line := line.rstrip().lstrip():
                 stripped_text.append(line)
-    # let's join the array into a string, seperating each element with a new link
-    formatted_text_content = "\n".join(stripped_text)
-    return formatted_text_content
+    return "\n".join(stripped_text)
 
 
 def compress_directory(dir: str):

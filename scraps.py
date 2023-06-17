@@ -41,14 +41,12 @@ def show_app_index():
 
 @app.route("/users", methods=["GET", "POST"])
 def register():
-    if request.method == "POST":
-        if request.form["user-email"] and request.form["user-password"]:
-            return user_register(request.form)
-        else:
-            flash("Invalid form submission - try again", 'danger')
-            return render_template("register.jinja.html")
-    else:
+    if request.method != "POST":
         return render_template("register.jinja.html")
+    if request.form["user-email"] and request.form["user-password"]:
+        return user_register(request.form)
+    flash("Invalid form submission - try again", 'danger')
+    return render_template("register.jinja.html")
 
 
 @app.route("/users/<int:id>", methods=["GET", "POST"])
@@ -73,14 +71,12 @@ def users(id):
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == "POST":
-        if request.form["user-email"] and request.form["user-password"]:
-            return user_login(request.form)
-        else:
-            flash("Invalid login attempt", "danger")
-            return render_template("login.jinja.html")
-    else:
+    if request.method != "POST":
         return render_template("login.jinja.html")
+    if request.form["user-email"] and request.form["user-password"]:
+        return user_login(request.form)
+    flash("Invalid login attempt", "danger")
+    return render_template("login.jinja.html")
 
 
 @app.route("/logout", methods=["GET"])
@@ -92,15 +88,14 @@ def logout():
 def crawl():
     if 'user' not in session:
         return redirect(url_for('login'))
-    if request.method == "POST":
-        if request.is_json:
-            json = request.get_json(request)
-            return process_user_crawl_request(json)
-        else:
-            flash(
-                "that request wasn't quite what we were expecting. try using the form", "danger")
-            return render_template("crawl-form.jinja.html")
+    if request.method != "POST":
+        return render_template("crawl-form.jinja.html")
+    if request.is_json:
+        json = request.get_json(request)
+        return process_user_crawl_request(json)
     else:
+        flash(
+            "that request wasn't quite what we were expecting. try using the form", "danger")
         return render_template("crawl-form.jinja.html")
 
 
